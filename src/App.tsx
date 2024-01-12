@@ -1,8 +1,7 @@
-import { For, Signal, createEffect, createSignal } from 'solid-js'
+import { For, Index, createEffect, createSignal } from 'solid-js'
 import './App.css'
-import { effect } from 'solid-js/web'
 import { Component } from 'solid-js/types/server/rendering.js'
-import { createStore } from 'solid-js/store/types/server.js'
+import { createStore } from 'solid-js/store'
 
 const example = `if you have to sit for hours
 staring at your computer screen
@@ -40,40 +39,63 @@ type Line = Word[]
 
 const [lines, setLines] = createStore<Line[]>([])
 
+const toggleWord = (lineIndex:number, wordIndex: number) => {
+  setLines(
+    lines.map((line, i) => lineIndex !== i? line : 
+        line.map((word, j) => wordIndex != j? word: {...word, isMarked:!word.isMarked})
+    )
+  )
+}
+
+const unmarkAllWords = () => {
+  setLines(
+    lines.map((line) => line.map((word) => {
+      return {...word, isMarked: false}
+    }))
+  )
+}
+
 function App() {
   const [text, setText] = createSignal(example)
   const [showAll, setShowAll] = createSignal(false)
 
-  const lines  = (): Line[] => text()
-    .split("\n").filter((line) => line) // Get lines
-    .map((line) => line.split(" ").filter((word) => word)) // Separate words
-    .map((line) => line.map((word) => {return {content:word, isMarked:false}})) // Format
+  createEffect(() => setLines(
+    text()
+      .split("\n").filter((line) => line) // Get lines
+      .map((line) => line.split(" ").filter((word) => word)) // Separate words
+      .map((line) => line.map((word) => {return {content:word, isMarked:false}})) // Format
+  ))
 
   return (
     <div class='w-full h-full p-4 bg-zinc-900'>
-      <div class='hidden'>
-        <textarea style={{margin: '6px'}} value={text()} onInput={(t) => {
-          setText(t.target.value)
-        }}></textarea>
-
-  
+      <div class=''>
+        <textarea class='' 
+          value={text()} 
+          onInput={(t) => {
+            setText(t.target.value)
+          }}
+        ></textarea>
       </div>
 
      <button onClick={() => setShowAll(!showAll())}>{showAll()? 'hide': 'show'}</button>
+     <button onClick={() => unmarkAllWords()}>Unmark</button>
 
       <div class='w-fit mx-auto monoscape shadow-md shadow-black p-6 select-none'>
-        <For each={lines()}>{ (line) => <Line data={line} show={showAll()}/>}</For>
+        <Index each={lines}>{ (line, i) => 
+          <Line number={i} data={line()} show={showAll()}/>}
+        </Index>
       </div>
 
    </div>
   )
 }
 
-const Line: Component<{data: Line, show: boolean}> = (props) => {
+const Line: Component<{data: Line, show: boolean, number:number}> = (props) => {
   const [show, setShow] = createSignal(props.show)
   const [showAlways, setShowAlways] = createSignal(false)
 
   createEffect(() => setShowAlways(props.show))
+
   return (
     <div class='flex mb-2'>
       <button
@@ -82,15 +104,20 @@ const Line: Component<{data: Line, show: boolean}> = (props) => {
         onmouseleave={() => setShow(false)} 
         class='bg-zinc-700 m-0 mr-2'>hover</button>
       <div class='flex gap-1'>
-        <For each={props.data}>{(word) =>
-          <Button word={word} show={show() || showAlways()}/>
-        }</For> 
+        <Index each={props.data}>{(word, i) =>
+          <Button 
+            lineNumber={props.number} 
+            number={i} 
+            word={word()} 
+            show={show() || showAlways()}
+          />
+        }</Index> 
       </div>
     </div>
   )
 }
 
-const Button: Component<{word: Word, show: boolean}> = (props) => {
+const Button: Component<{word: Word, show: boolean, lineNumber:number, number:number}> = (props) => {
   const [showWord, setShowWord] = createSignal(false)
   const [showAlways, setShowAllways] = createSignal(props.show)
 
@@ -100,11 +127,11 @@ const Button: Component<{word: Word, show: boolean}> = (props) => {
   return (
     <button 
       class={
-        'flex transition-all duration-75 text-2xl p-1 px-2 rounded-md hover:bg-indigo-900' +
-        (props.word.isMarked? ' bg-amber-400 hover:bg-amber-400 font-bold text-black': '')
+        'flex transition-all duration-75 text-2xl p-1 px-2 rounded-md ' +
+        (props.word.isMarked? ' bg-amber-400 hover:bg-amber-400 font-bold text-black': 'hover:bg-indigo-900')
       }
       onMouseOver={() => setShowWord(true)}
-      onClick={() => {}}
+      onClick={() => toggleWord(props.lineNumber, props.number)}
       onMouseLeave={() => setShowWord(false)}>
       <span class={'flex ' }>
         <p>{props.word.content[0]}</p>
