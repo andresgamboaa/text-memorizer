@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.fix-scroll {
+  scrollbar-gutter: stable;
+}
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -44,8 +48,8 @@ body {
  
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #cacaca5c; 
-  border-radius: 6px;
+  background: #72727279; 
+  border-radius: 4px;
 }
 
 /* Handle on hover */

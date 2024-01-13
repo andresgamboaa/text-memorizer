@@ -12,8 +12,8 @@ export const WordButton: Component<{word: Word, show: boolean, lineNumber:number
   return (
     <button 
       class={
-        'flex transition-all duration-75 text-lg p-1 px-2 rounded-md text-nowrap ' +
-        (props.word.isMarked? ' bg-amber-400 hover:bg-amber-400 font-bold text-black': 'hover:bg-indigo-900')
+        'flex transition-all duration-75 text-lg p-1 px-2 rounded-md text-nowrap' +
+        (props.word.isMarked? ' bg-amber-400 hover:bg-amber-400 font-bold text-black': ' hover:bg-indigo-900 hover:text-white')
       }
       onMouseOver={() => setShowWord(true)}
       onClick={() => toggleWord(props.lineNumber, props.number)}
