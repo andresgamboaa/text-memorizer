@@ -17,6 +17,38 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+#root {
+  height: 100%;
+}
+
+body {
+  height: 100vh;
+  scroll-behavior: smooth;
+}
+
 .monoscape {
   font-family: monospace;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 0.6rem;
+  height: 0.6rem;
+  background: transparent;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #cacaca5c; 
+  border-radius: 6px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
 }
