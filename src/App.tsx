@@ -2,6 +2,7 @@ import { Index, Show, createEffect, createSignal } from 'solid-js'
 import { lines, setLines, unmarkAllWords } from './Store'
 import { LineView } from './components/Line'
 import { ToggleThemeButton } from './components/ToggleThemeButton'
+import githubImg from './assets/github.png'
 
 function App() {
   const [text, setText] = createSignal('')
@@ -50,19 +51,29 @@ function App() {
         
         <section>
           <h2 class='mt-8 text-3xl bold mb-4'>About</h2>
-          <p class='text-lg mb-8'>This open-source web application is designed to enhance your ability to memorize various forms of text, such as lines from scripts, poems, speeches, and monologues.</p>
+          <p class='text-lg mb-8'>This tool is designed to enhance your ability to memorize various forms of text, such as lines from scripts, poems, speeches, and monologues.</p>
         </section>
 
-        <section class='mt-8 mb-4'>
+        <section class='mt-8'>
           <h2 class='text-3xl bold mb-4'>Instructions</h2>
           <ul class='list-disc ml-4'>
             <li>Use the first character of every word as a clue.</li>
             <li>Hover your mouse over the text to reveal words.</li>
             <li>Click on difficult words to keep them visible.</li>
           </ul>
-       </section>
- 
+        </section>
+
+        <a class='flex gap-2 w-fit hover:underline hover:text-indigo-700 mt-8 mb-4' 
+          target='_blank' href='https://github.com/andresgamboaa/text-memorizer'>
+          <span class='rounded-full bg-zinc-900 grid place-content-center p-1'>
+            <img src={githubImg} width={20}></img>
+          </span>
+          View Code
+        </a>
+
         <ToggleThemeButton />
+
+        <span class='fixed bottom-1 right-1 opacity-70  text-xs '>Created by: Andrés Gamboa A.</span>
       </div>
     </div>
   )
